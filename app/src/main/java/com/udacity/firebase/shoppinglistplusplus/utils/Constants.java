@@ -1,5 +1,7 @@
 package com.udacity.firebase.shoppinglistplusplus.utils;
 
+import com.udacity.firebase.shoppinglistplusplus.BuildConfig;
+
 /**
  * Constants class store most important strings and paths of the app
  */
@@ -14,12 +16,13 @@ public final class Constants {
     /**
      * Constants for Firebase object properties
      */
-
-
+    public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
+    public static final String FIREBASE_LOCATION_ACTIVE_LIST = "active_lists";
+    public static final String FIREBASE_URL_ACTIVE_LIST = "https://shoplistplusplus-7cee9.firebaseio.com/activeList";
     /**
      * Constants for Firebase URL
      */
-
+    public static final String FIREBASE_URL= BuildConfig.UNIQUE_FIREBASE_ROOT_URL;
 
     /**
      * Constants for bundles, extras and shared preferences keys
