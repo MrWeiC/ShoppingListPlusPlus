@@ -3,15 +3,21 @@ package com.udacity.firebase.shoppinglistplusplus.ui.activeListDetails;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.udacity.firebase.shoppinglistplusplus.R;
 import com.udacity.firebase.shoppinglistplusplus.model.ShoppingList;
 import com.udacity.firebase.shoppinglistplusplus.ui.BaseActivity;
+import com.udacity.firebase.shoppinglistplusplus.utils.Constants;
 
 /**
  * Represents the details screen for the selected shopping list
@@ -36,9 +42,28 @@ public class ActiveListDetailsActivity extends BaseActivity {
         // shopping list. You might want to save this shopping list as well.
         // You can but the invalidateOptionsMenu call inside of the same block of code.
         // If the shopping list doesn't exist, close the activity using finish()
+        Firebase ref = new Firebase(Constants.FIREBASE_URL_ACTIVE_LIST);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ShoppingList shoppingList = dataSnapshot.getValue(ShoppingList.class);
+                if (shoppingList == null) {
+                    finish();
+                    return;
+                }
 
-        /* Calling invalidateOptionsMenu causes onCreateOptionsMenu to be called */
-        invalidateOptionsMenu();
+                /* Calling invalidateOptionsMenu causes onCreateOptionsMenu to be called */
+                invalidateOptionsMenu();
+
+                setTitle(shoppingList.getListName());
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(LOG_TAG, getString(R.string.log_error_the_read_failed) +
+                        firebaseError.getMessage());
+            }
+        });
 
         /**
          * Set up click listeners for interaction.
@@ -50,7 +75,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 /* Check that the view is not the empty footer item */
-                if(view.getId() != R.id.list_view_footer_empty) {
+                if (view.getId() != R.id.list_view_footer_empty) {
                     showEditListItemNameDialog();
                 }
                 return true;
@@ -153,8 +178,8 @@ public class ActiveListDetailsActivity extends BaseActivity {
 
 
     /**
-     * Start AddItemsFromMealActivity to add meal ingredients into the shopping list
-     * when the user taps on "add meal" fab
+     * Start AddItemsFromMealActivity to add meal ingredients into the shopping list when the user
+     * taps on "add meal" fab
      */
     public void addMeal(View view) {
     }
