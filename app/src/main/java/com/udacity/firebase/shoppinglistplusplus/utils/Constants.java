@@ -18,6 +18,8 @@ public final class Constants {
      */
     public static final String FIREBASE_PROPERTY_LIST_NAME = "listName";
     public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
+    public static final String FIREBASE_PROPERTY_TIMESTAMP_LAST_CHANGED = "timestampLastChanged";
+
 
 
     /**
@@ -32,5 +34,6 @@ public final class Constants {
      */
     public static final String KEY_LAYOUT_RESOURCE = "LAYOUT_RESOURCE";
 
+    public static final String KEY_LIST_NAME = "LIST_NAME";
 
 }
