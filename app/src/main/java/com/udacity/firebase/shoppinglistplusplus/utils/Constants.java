@@ -11,7 +11,7 @@ public final class Constants {
      * Constants related to locations in Firebase, such as the name of the node
      * where active lists are stored (ie "activeLists")
      */
-    public static final String FIREBASE_LOCATION_ACTIVE_LIST = "activeList";
+    public static final String FIREBASE_LOCATION_ACTIVE_LIST = "activeLists";
     // TODO instead of using the location activeList, let's store the new lists under
     // activeLists (plural). This will also keep the app from crashing since we're
     // only updating the write portion.
@@ -21,6 +21,7 @@ public final class Constants {
      */
     public static final String FIREBASE_PROPERTY_LIST_NAME = "listName";
     public static final String FIREBASE_PROPERTY_TIMESTAMP_LAST_CHANGED = "timestampLastChanged";
+    public static final String FIREBASE_PROPERTY_TIMESTAMP_CREATED = "timestampCreated";
     public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
 
 
