@@ -14,8 +14,6 @@ public class ShoppingList {
     private String listName;
     private String owner;
     private HashMap<String, Object> timestampLastChanged;
-    // TODO Now that we have more than one list, let's add an unchanging timestamp for when
-    // the list was created.
     private HashMap<String, Object> timestampCreated;
 
     /**
@@ -32,15 +30,14 @@ public class ShoppingList {
      * @param listName
      * @param owner
      */
-    public ShoppingList(String listName, String owner) {
+    public ShoppingList(String listName, String owner, HashMap<String, Object> timestampCreated) {
         this.listName = listName;
         this.owner = owner;
-        HashMap<String, Object> timestampLastChangedObj = new HashMap<String, Object>();
-        timestampLastChangedObj.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
-        this.timestampLastChanged = timestampLastChangedObj;
-        HashMap<String, Object> timestampCreatedObj = new HashMap<String, Object>();
-        timestampCreatedObj.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
-        this.timestampCreated = timestampCreatedObj;
+
+        this.timestampCreated = timestampCreated;
+        HashMap<String, Object> timestampNowObj = new HashMap<String, Object>();
+        timestampNowObj.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+        this.timestampLastChanged = timestampNowObj;
 
     }
 
@@ -64,6 +61,12 @@ public class ShoppingList {
     public long getTimestampLastChangedLong() {
 
         return (long) timestampLastChanged.get(Constants.FIREBASE_PROPERTY_TIMESTAMP);
+    }
+
+    @JsonIgnore
+    public long getTimestampCreateddLong() {
+
+        return (long) timestampCreated.get(Constants.FIREBASE_PROPERTY_TIMESTAMP);
     }
 
 }

@@ -14,9 +14,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.firebase.client.ServerValue;
 import com.udacity.firebase.shoppinglistplusplus.R;
 import com.udacity.firebase.shoppinglistplusplus.model.ShoppingList;
 import com.udacity.firebase.shoppinglistplusplus.utils.Constants;
+
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Adds a new shopping list
@@ -25,8 +29,8 @@ public class AddListDialogFragment extends DialogFragment {
     EditText mEditTextListName;
 
     /**
-     * Public static constructor that creates fragment and
-     * passes a bundle with data into it when adapter is created
+     * Public static constructor that creates fragment and passes a bundle with data into it when
+     * adapter is created
      */
     public static AddListDialogFragment newInstance() {
         AddListDialogFragment addListDialogFragment = new AddListDialogFragment();
@@ -78,12 +82,12 @@ public class AddListDialogFragment extends DialogFragment {
         /* Pass null as the parent view because its going in the dialog layout*/
         builder.setView(rootView)
                 /* Add action buttons */
-                .setPositiveButton(R.string.positive_button_create, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        addShoppingList();
-                    }
-                });
+            .setPositiveButton(R.string.positive_button_create, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    addShoppingList();
+                }
+            });
 
         return builder.create();
     }
@@ -93,22 +97,34 @@ public class AddListDialogFragment extends DialogFragment {
      */
     public void addShoppingList() {
         // TODO This is where you add a shopping list.
-        // You'll need to change the code in this method around to properly
-        // add a shopping list so that you may have more than one.
-
-        // Get the reference to the root node in Firebase
-        Firebase ref = new Firebase(Constants.FIREBASE_URL_ACTIVE_LIST);
-        // Get the string that the user entered into the EditText and make an object with it
-        // We'll use "Anonymous Owner" for the owner because we don't have user accounts yet
         String userEnteredName = mEditTextListName.getText().toString();
         String owner = "Anonymous Owner";
-        ShoppingList currentList = new ShoppingList(userEnteredName, owner);
+        /**
+         * If EditText input is not empty
+         */
+        if (!userEnteredName.equals("")){
+            // Get the reference to the root node in Firebase
+            Firebase ref = new Firebase(Constants.FIREBASE_URL_ACTIVE_LISTS);
+            // Then using the setValue menu it will serialize the ShoppingList POJO
+            Firebase newRef = ref.push();
 
-        // Go to the "activeList" child node of the root node.
-        // This will create the node for you if it doesn't already exist.
-        // Then using the setValue menu it will serialize the ShoppingList POJO
-        Firebase newRef =  ref.push();
-        newRef.setValue(currentList);
+            final String listId = newRef.getKey();
+
+            HashMap<String, Object> timestampCreated = new HashMap<String, Object>();
+            timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+            ShoppingList newShoppingList = new ShoppingList(userEnteredName, owner, timestampCreated);
+            newRef.setValue(newShoppingList);
+
+            /*
+            close dialog
+             */
+            AddListDialogFragment.this.getDialog().cancel();
+        }
+
+
+
+
     }
 }
 
