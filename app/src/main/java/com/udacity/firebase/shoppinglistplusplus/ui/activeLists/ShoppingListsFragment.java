@@ -75,7 +75,7 @@ public class ShoppingListsFragment extends Fragment {
          * Create Firebase references
          */
         // TODO This is referring to an old location
-        Firebase refActiveLists = new Firebase(Constants.FIREBASE_LOCATION_ACTIVE_LISTS);
+        Firebase refActiveLists = new Firebase(Constants.FIREBASE_URL_ACTIVE_LISTS);
 
         // TODO Here is where you need to set up the adapter. You'll also need to delete
         // your old code that referenced the single "activeList", instead, you should save
