@@ -17,8 +17,10 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.udacity.firebase.shoppinglistplusplus.R;
 import com.udacity.firebase.shoppinglistplusplus.model.ShoppingList;
+import com.udacity.firebase.shoppinglistplusplus.model.ShoppingListItem;
 import com.udacity.firebase.shoppinglistplusplus.ui.BaseActivity;
 import com.udacity.firebase.shoppinglistplusplus.utils.Constants;
+
 
 /**
  * Represents the details screen for the selected shopping list
@@ -29,15 +31,19 @@ public class ActiveListDetailsActivity extends BaseActivity {
     private ListView mListView;
     private String mListId;
     private ShoppingList mShoppingList;
+    private ActiveListItemAdapter mShoppingListItemsAdapter;
 
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_list_details);
-        // TODO Here is where you should set everything up for the adapter, much like you
-        // did with the ShoppingListsFragment class and the ActiveListAdapter.
-        // I've created the list item layout "single_active_list_item.xml" for you to use.
+
+        Firebase shoppingListItemsRef = new Firebase(Constants.FIREBASE_URL_ACTIVE_LISTS).child(mListId);
+
+        mShoppingListItemsAdapter = new ActiveListItemAdapter(this, ShoppingListItem.class,
+            R.layout.single_active_list_item, shoppingListItemsRef);
+        mListView.setAdapter(mShoppingListItemsAdapter);
 
         /* Get the push ID from the extra passed by ShoppingListFragment */
         Intent intent = this.getIntent();
@@ -51,8 +57,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
         /**
          * Create Firebase references
          */
-        mActiveListRef = new Firebase(Constants.FIREBASE_URL_ACTIVE_LISTS).child(mListId);
-
+        mActiveListRef = new Firebase(Constants.FIREBASE_URL_SHOPPING_LIST_ITEMS).child(mListId);
 
         /**
          * Link layout elements from XML and setup the toolbar
@@ -63,6 +68,8 @@ public class ActiveListDetailsActivity extends BaseActivity {
          * Save the most recent version of current shopping list into mShoppingList instance
          * variable an update the UI to match the current list.
          */
+
+
         mActiveListRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -94,11 +101,10 @@ public class ActiveListDetailsActivity extends BaseActivity {
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Log.e(LOG_TAG,
-                        getString(R.string.log_error_the_read_failed) +
-                                firebaseError.getMessage());
+                    getString(R.string.log_error_the_read_failed) +
+                        firebaseError.getMessage());
             }
         });
-
 
         /**
          * Set up click listeners for interaction.
@@ -110,7 +116,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 /* Check that the view is not the empty footer item */
-                if(view.getId() != R.id.list_view_footer_empty) {
+                if (view.getId() != R.id.list_view_footer_empty) {
                     showEditListItemNameDialog();
                 }
                 return true;
@@ -185,6 +191,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mShoppingListItemsAdapter.cleanup();
     }
 
     /**
@@ -213,8 +220,8 @@ public class ActiveListDetailsActivity extends BaseActivity {
 
 
     /**
-     * Start AddItemsFromMealActivity to add meal ingredients into the shopping list
-     * when the user taps on "add meal" fab
+     * Start AddItemsFromMealActivity to add meal ingredients into the shopping list when the user
+     * taps on "add meal" fab
      */
     public void addMeal(View view) {
     }
